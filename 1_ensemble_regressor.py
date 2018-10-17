@@ -36,7 +36,7 @@ def get_models():
     """Generate a library of base learners."""
     mlp=MLPRegressor()
     lr = LinearRegression()
-    # dt=DecisionTreeRegressor()
+    dt=DecisionTreeRegressor()
     knn=KNeighborsRegressor()
     svm=SVR()
     rf = RandomForestRegressor(max_depth=4,random_state=SEED)
@@ -45,7 +45,7 @@ def get_models():
     xgb = XGBRegressor()
     lgb = LGBMRegressor()
     models = {
-        'mlp':mlp,
+        # 'mlp':mlp,
         'logistic': lr,
         # 'decision tree':dt,
         'knn':knn,
