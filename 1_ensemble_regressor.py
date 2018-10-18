@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
 from sklearn.neural_network import MLPRegressor
-from sklearn.linear_model import LinearRegression,SGDRegressor,HuberRegressor
+from sklearn.linear_model import LinearRegression,SGDRegressor,HuberRegressor,LogisticRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.svm import SVR
 from sklearn.neighbors import KNeighborsRegressor
@@ -35,8 +35,10 @@ X_train, X_test, y_train, y_test=get_train_test()
 def get_models():
     """Generate a library of base learners."""
     mlp=MLPRegressor()
-    lr = LinearRegression()
+    lin = LinearRegression()
     dt=DecisionTreeRegressor()
+    sgd=SGDRegressor()
+    hub=HuberRegressor()
     knn=KNeighborsRegressor()
     svm=SVR()
     rf = RandomForestRegressor(max_depth=4,random_state=SEED)
@@ -45,14 +47,16 @@ def get_models():
     xgb = XGBRegressor()
     lgb = LGBMRegressor()
     models = {
-        # 'mlp':mlp,
-        'logistic': lr,
-        # 'decision tree':dt,
+        'mlp':mlp,
+        'linear': lin,
+        'decision tree':dt,
+        'sgd':sgd,
+        'hub':hub,
         'knn':knn,
         'svm':svm,
         'random forest': rf,
         'gbm': gb,
-        # 'ab': ab,
+        'ab': ab,
         'xgb': xgb,
         'lgb': lgb
         }
