@@ -99,7 +99,7 @@ def score_models(P, y):
 def predict(P_sub):
     df_test['prediction'] = P_sub.mean(axis=1)
     df_test['time']=df_test['日期']
-    df_test[['time', 'prediction']].to_csv('result/1_ensemble_regressor.csv', index=False)
+    df_test[['time', 'prediction']].to_csv('result/01_ensemble_regressor.csv', index=False)
     print("predictin done")
 
 
