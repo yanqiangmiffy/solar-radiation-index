@@ -49,14 +49,14 @@ def get_models():
     models = {
         'mlp':mlp,
         'linear': lin,
-        'decision tree':dt,
+        # 'decision tree':dt,
         'sgd':sgd,
         'hub':hub,
         'knn':knn,
         'svm':svm,
         'random forest': rf,
         'gbm': gb,
-        'ab': ab,
+        # 'ab': ab,
         'xgb': xgb,
         'lgb': lgb
         }
