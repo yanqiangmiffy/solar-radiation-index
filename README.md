@@ -22,3 +22,11 @@
 ```
 2. 基于方向的特征：风向，风向的频率，基于风向的平均风速
 ```
+
+- 统计特征
+
+日照时数（辐照度） 、平均大气压 、平均风速 、平均气温、气温日较差 、相对湿度、日总辐射量
+
+## 参考文献
+1. 基于BP神经网络的太阳辐射预测——以兰州市为例
+2. [【kdd 2018 cup-github资料】](https://github.com/search?l=Jupyter+Notebook&q=kdd+cup+2018&type=Repositories)
