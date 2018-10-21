@@ -48,9 +48,9 @@ def get_models():
     lgb = LGBMRegressor()
     models = {
         # 'mlp':mlp,
-        'linear': lin,
+        # 'linear': lin,
         # 'decision tree':dt,
-        # 'sgd':sgd,
+        'sgd':sgd,
         'hub':hub,
         # 'knn':knn,
         # 'svm':svm,
