@@ -23,7 +23,6 @@ X=df_train.drop(['日期'], axis=1, inplace=False)
 X=scaler.fit_transform(X)
 y=label.values
 
-
 # 预测结果的数据
 sub_X=df_test.drop(['日期'], axis=1, inplace=False)
 sub_x=scaler.fit_transform(sub_X)
@@ -49,7 +48,7 @@ for index, (train_index, test_index) in enumerate(kf.split(X)):
             eval_set=[(X_train, y_train), (X_test, y_test)],
             early_stopping_rounds=30,
             eval_metric=['mae'],
-            verbose=True)
+            verbose=False)
 
     # 验证模型
     test_pred=clf.predict(X_test)
@@ -60,11 +59,11 @@ for index, (train_index, test_index) in enumerate(kf.split(X)):
     if index == 0:
         df_test['prediction'] = sub_pred
     else:
-        df_test['prediction']= +sub_pred
-
+        df_test['prediction']= df_test['prediction']+sub_pred
 print('score list:',scores)
 print(np.mean(scores))
-df_test['prediction']/=5
+
+df_test['prediction']=df_test['prediction']/5
 
 df_test.rename(columns={'日期':'time'},inplace=True)
 df_test[['time', 'prediction']].to_csv('result/02_xgb_cv_poly.csv', index=False)
