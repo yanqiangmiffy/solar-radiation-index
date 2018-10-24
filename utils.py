@@ -6,7 +6,6 @@
 import pandas  as pd
 from sklearn.preprocessing import PolynomialFeatures
 
-
 def load_data():
 
     df_train_feature=pd.read_csv('input/train_feature.csv')
@@ -24,13 +23,8 @@ def load_data():
     return df_train,df_test
 
 
-df_train_feature=pd.read_csv('input/train_feature.csv')
-df_train_label=pd.read_csv('input/train_label.csv')
-df_test_feature = pd.read_csv('input/test_feature.csv')
-
 
 def to_one_day(df_data):
-
     grouped=df_data.groupby('日期')
     quarters=df_data['时刻'].drop_duplicates()
     fea_cols=['辐照度','风速','风向','温度','湿度','气压']
@@ -63,8 +57,8 @@ def add_poly_features(data,column_names):
     return rest_features
 
 
-def create_fea():
-    df_data=to_one_day(df_train_feature)
+def create_fea(df_data):
+    df_data=to_one_day(df_data)
     col_names = df_data.columns.tolist()[1:]
     for i in range(6):
         temp=[]
@@ -79,7 +73,15 @@ def create_fea():
     co = ['风速_mean', '辐照度_mean', '风向_mean', '温度_mean', '湿度_mean', '气压_mean']
 
     df_data = add_poly_features(df_data, co)
-    print(df_data.columns)
+    # print(df_data.columns)
     return df_data
 
-create_fea()
+
+def load_feature():
+    df_train = pd.read_csv('input/train_feature.csv')
+    label = pd.read_csv('input/train_label.csv')['电场实际太阳辐射指数']
+    df_test = pd.read_csv('input/test_feature.csv')
+    df_train=create_fea(df_train)
+    df_test=create_fea(df_test)
+    return df_train,df_test,label
+
