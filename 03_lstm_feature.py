@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 from sklearn.preprocessing import StandardScaler,MinMaxScaler
-from feature import load_feature
+from utils import load_feature
 
 
 from keras.models import Sequential
@@ -38,7 +38,7 @@ X_test=X_test.reshape(X_test.shape[0],1, X_test.shape[1])
 
 # design network
 model = Sequential()
-model.add(LSTM(50, input_shape=(X_train.shape[1], X_train.shape[2])))
+model.add(LSTM(256, input_shape=(X_train.shape[1], X_train.shape[2])))
 model.add(Dense(1))
 model.compile(loss='mae', optimizer='adam')
 # fit network

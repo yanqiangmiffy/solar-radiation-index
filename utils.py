@@ -62,8 +62,9 @@ def create_fea(df_data):
     col_names = df_data.columns.tolist()[1:]
 
     ## 日照百分率
-    fuzhao_cols = [col for col in df_data.columns if '辐照度' in col]
-    df_data['日照_ration']=((df_data[fuzhao_cols]!= 0.0).astype(int).sum(axis=1)-1)/7
+    # fuzhao_cols = [col for col in df_data.columns if '辐照度' in col]
+    # df_data['日照_ration']=((df_data[fuzhao_cols]!= 0.0).astype(int).sum(axis=1)-1)/7
+
     # 计算每日的数据特征均值 方差、最大值和最小值
     for i in range(6):
         temp=[]
@@ -76,13 +77,12 @@ def create_fea(df_data):
         df_data[temp[0].split('_')[1]+'_max']=df_data[temp].max(axis=1)
 
     ## 计算温度日较差模型：日照平均值*温度差平方根
-    df_data['温度_sub']=df_data['辐照度_mean']*\
-                      np.sqrt(df_data['温度_max']-df_data['温度_min'])
+    df_data['温度_sub']=np.sqrt(df_data['温度_max']-df_data['温度_min'])
 
     ## 增加二阶特征
     co = ['风速_mean', '辐照度_mean', '风向_mean', '温度_mean', '湿度_mean', '气压_mean']
     df_data = add_poly_features(df_data, co)
-    print(df_data.columns)
+    # print(df_data.columns)
     return df_data
 
 

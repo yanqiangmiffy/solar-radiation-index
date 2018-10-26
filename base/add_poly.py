@@ -10,11 +10,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import PolynomialFeatures
 
 
-test = pd.read_csv('../data/test_feature.csv')
+test = pd.read_csv('../input/test_feature.csv')
 # print(test)
-train = pd.read_csv('../data/train_feature.csv')
+train = pd.read_csv('../input/train_feature.csv')
 
-label = pd.read_csv('../data/train_label.csv')
+label = pd.read_csv('../input/train_label.csv')
 scaler=StandardScaler()
 
 def to_one_day(data_df):
@@ -23,7 +23,7 @@ def to_one_day(data_df):
 
     train_date = train[['日期']].drop_duplicates().reset_index(drop=True)
     for i in range(1, train['日期'].max()+1):
-        print(i)
+        # print(i)
         data = train[train['日期'] == i].reset_index(drop=True)
 
         # train_date.loc[i - 1, '2_辐照度'] = data.loc[0, '辐照度']
@@ -82,7 +82,7 @@ def to_one_day(data_df):
         train_date.loc[i - 1, '23_湿度'] = data.loc[7, '湿度']
         train_date.loc[i - 1, '23_气压'] = data.loc[7, '气压']
 
-    print(train_date)
+    # print(train_date)
     return train_date
 
 # def get_old():
@@ -191,7 +191,7 @@ def get_result(train_df, test_df):
 
         model.fit(X_train, y_train,
                   eval_set=[(X_train, y_train), (X_test, y_test)],
-                  early_stopping_rounds=30, verbose=2)
+                  early_stopping_rounds=30, eval_metric=['mae'],verbose=2)
 
         vali_pre = model.predict(X_test)
         score = mean_absolute_error(y_test, vali_pre)
@@ -205,7 +205,7 @@ def get_result(train_df, test_df):
             re_sub = re_sub+sub
     re_sub = re_sub/5
     re_sub = re_sub.rename(columns={'日期':'time'})
-    print(re_sub)
+    # print(re_sub)
     print('score list:',mean_re)
     print(np.mean(mean_re))
     return re_sub

@@ -16,17 +16,17 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.ensemble import AdaBoostRegressor,RandomForestRegressor,GradientBoostingRegressor
 from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
-from utils import load_data
+from utils import load_feature
 from sklearn.metrics import mean_absolute_error
 
 SEED=222
-df_train,df_test=load_data()
+df_train,df_test,label=load_feature()
 scaler=StandardScaler()
 
 def get_train_test(test_size=0.2):
-    X = df_train.drop(['日期', '电场实际太阳辐射指数'], axis=1, inplace=False)
-    X=scaler.fit_transform(X)
-    y = df_train['电场实际太阳辐射指数']
+    X = df_train.drop(['日期'], axis=1, inplace=False)
+    X = scaler.fit_transform(X)
+    y = label.values
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
     return X_train, X_test, y_train, y_test
 
@@ -45,8 +45,17 @@ def get_models():
     rf = RandomForestRegressor(max_depth=4,random_state=SEED)
     gb = GradientBoostingRegressor(n_estimators=100, random_state=SEED)
     ab = AdaBoostRegressor(random_state=SEED)
-    xgb = XGBRegressor()
-    lgb = LGBMRegressor()
+    xgb = XGBRegressor(objective='reg:linear',
+                 n_estimators=1000,
+                 min_child_weight=1,
+                 learning_rate=0.01,
+                 max_depth=5,
+                 n_jobs=4,
+                 subsample=0.6,
+                 colsample_bytree=0.4,
+                 colsample_bylevel=1)
+
+    lgb = LGBMRegressor(n_estimators=1000)
     models = {
         'mlp':mlp,
         'linear': lin,
