@@ -6,8 +6,9 @@
 import pandas  as pd
 from sklearn.preprocessing import PolynomialFeatures
 import numpy as np
-def load_data():
 
+
+def load_data():
     df_train_feature=pd.read_csv('input/train_feature.csv')
     df_train_label=pd.read_csv('input/train_label.csv')
     df_train_feature=df_train_feature.groupby(by='日期').mean().reset_index()
@@ -21,7 +22,6 @@ def load_data():
     # df_test=df_test.drop(['时刻'],axis=1)
 
     return df_train,df_test
-
 
 
 def to_one_day(df_data):
@@ -79,10 +79,15 @@ def create_fea(df_data):
     ## 计算温度日较差模型：日照平均值*温度差平方根
     df_data['温度_sub']=np.sqrt(df_data['温度_max']-df_data['温度_min'])
 
+    df_data.drop(columns=['2_辐照度', '5_辐照度', '23_辐照度'], inplace=True)
+
+    df_data['8_辐照度0'] = df_data['8_辐照度'].map(lambda x: 0 if x > 0 else 1)
+    df_data['20_辐照度0'] = df_data['20_辐照度'].map(lambda x: 0 if x > 0 else 1)
+
     ## 增加二阶特征
     co = ['风速_mean', '辐照度_mean', '风向_mean', '温度_mean', '湿度_mean', '气压_mean']
     df_data = add_poly_features(df_data, co)
-    # print(df_data.columns)
+    print(df_data.columns)
     return df_data
 
 
