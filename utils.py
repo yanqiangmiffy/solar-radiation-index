@@ -6,7 +6,8 @@
 import pandas  as pd
 from sklearn.preprocessing import PolynomialFeatures
 import numpy as np
-
+from sklearn.preprocessing import StandardScaler
+scaler=StandardScaler()
 
 def load_data():
     df_train_feature=pd.read_csv('input/train_feature.csv')
@@ -92,20 +93,26 @@ def process_fuzhaodu(df_data):
 def process_wind_direction(df_data):
     cols=['2_风向','5_风向','8_风向','11_风向',
           '14_风向','17_风向','20_风向','23_风向']
-    df_data['风向_EN']=0
-    df_data['风向_ES']=0
-    df_data['风向_WS']=0
-    df_data['风向_WN']=0
+    EN = [0] * len(df_data)
+    ES = [0] * len(df_data)
+    WS = [0] * len(df_data)
+    WN = [0] * len(df_data)
+    # 风向_EN 风向_ES 风向_WS 风向_WN
     for index in range(len(df_data)):
         for dir in df_data.iloc[index][cols]:
             if 0<=dir<90:
-                df_data.iloc[index]['风向_EN']+=1
+                EN[index]+=1
             elif 90<=dir<180:
-                df_data.iloc[index]['风向_ES']+=1
+                ES[index] += 1
             elif 180<=dir<270:
-                df_data.iloc[index]['风向_WS']+=1
+                WS[index] += 1
             else:
-                df_data.iloc[index]['风向_WN']+=1
+                WN[index] += 1
+    df_data['风向_EN']=EN
+    df_data['风向_ES']=ES
+    df_data['风向_WS']=WS
+    df_data['风向_WN']=WN
+    # print(df_data['风向_EN'])
     return df_data
 
 
@@ -123,13 +130,30 @@ def create_fea(df_data):
     df_data=to_one_day(df_data)
     # 计算统计值
     df_data=cal_base(df_data)
-    # 处理辐照度
-    df_data=process_fuzhaodu(df_data)
+    # # 处理辐照度
+    # df_data = process_fuzhaodu(df_data)
     # 处理风速
-    # df_data=process_wind_direction(df_data)
+    df_data=process_wind_direction(df_data)
     # 处理温度
     df_data=process_temp(df_data)
-    # 处理气压
+
+    # 增加二阶特征
+    co = ['风速_mean', '辐照度_mean', '风向_mean', '温度_mean', '湿度_mean', '气压_mean']
+    df_data = add_poly_features(df_data, co)
+
+    df_data['mean_fsfx'] = df_data['风速_mean'] * df_data['风向_mean']
+    df_data['mean_sdqy'] = df_data['气压_mean'] * df_data['湿度_mean']
+    df_data['mean_fswd'] = df_data['风速_mean'] * df_data['温度_mean']
+    df_data['mean_fswd_add'] = df_data['风速_mean'] + df_data['温度_mean']
+
+    for i in range(0, len(df_data)):
+        if i <1:
+            df_data.loc[i, 'old_辐照度_mean'] = df_data.loc[i, '辐照度_mean']
+        elif i < 2:
+            df_data.loc[i, 'old_辐照度_mean'] = (df_data.loc[i, '辐照度_mean'] + df_data.loc[i-1, '辐照度_mean'])/2
+        else:
+            df_data.loc[i, 'old_辐照度_mean'] = (df_data.loc[i, '辐照度_mean'] + df_data.loc[i - 1, '辐照度_mean']+ df_data.loc[i - 2, '辐照度_mean']) / 3
+
     return df_data
 
 
@@ -142,4 +166,4 @@ def load_feature():
     return df_train,df_test,label
 
 
-df_train,df_test,label=load_feature()
+# df_train,df_test,label=load_feature()
