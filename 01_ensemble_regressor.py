@@ -21,11 +21,11 @@ from sklearn.metrics import mean_absolute_error
 
 SEED=222
 df_train,df_test,label=load_feature()
-scaler=StandardScaler()
+# scaler=StandardScaler()
 
 def get_train_test(test_size=0.2):
     X = df_train.drop(['日期'], axis=1, inplace=False)
-    X = scaler.fit_transform(X)
+    # X = scaler.fit_transform(X)
     y = label.values
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=42)
     return X_train, X_test, y_train, y_test
@@ -57,13 +57,13 @@ def get_models():
 
     lgb = LGBMRegressor(n_estimators=1000)
     models = {
-        'mlp':mlp,
+        # 'mlp':mlp,
         'linear': lin,
         # 'decision tree':dt,
-        'sgd':sgd,
-        'hub':hub,
-        'knn':knn,
-        'svm':svm,
+        # 'sgd':sgd,
+        # 'hub':hub,
+        # 'knn':knn,
+        # 'svm':svm,
         'random forest': rf,
         'gbm': gb,
         # 'ab': ab,
@@ -78,7 +78,7 @@ def train_predict(model_list):
     """Fit models in list on training set and return preds"""
     P = np.zeros((y_test.shape[0], len(model_list)))
     x_sub = df_test.drop(['日期'], axis=1, inplace=False)
-    x_sub=scaler.transform(x_sub)
+    # x_sub=scaler.transform(x_sub)
     P_sub = np.zeros((x_sub.shape[0], len(model_list)))
     P = pd.DataFrame(P)
     P_sub = pd.DataFrame(P_sub)

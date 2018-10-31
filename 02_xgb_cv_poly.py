@@ -24,8 +24,8 @@ X=scaler.fit_transform(X)
 y=label.values
 
 # 预测结果的数据
-sub_X=df_test.drop(['日期'], axis=1, inplace=False)
-sub_x=scaler.fit_transform(sub_X)
+sub_x=df_test.drop(['日期'], axis=1, inplace=False)
+sub_x=scaler.fit_transform(sub_x)
 
 kf = KFold(n_splits=5, random_state=123, shuffle=True)
 clf=XGBRegressor(objective='reg:linear',

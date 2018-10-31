@@ -82,6 +82,7 @@ def process_fuzhaodu(df_data):
     :param df_data:
     :return:
     """
+
     df_data.drop(columns=['2_辐照度', '5_辐照度', '23_辐照度'], inplace=True)
     df_data['8_辐照度0'] = df_data['8_辐照度'].map(lambda x: 0 if x > 0 else 1)
     df_data['20_辐照度0'] = df_data['20_辐照度'].map(lambda x: 0 if x > 0 else 1)
@@ -89,47 +90,22 @@ def process_fuzhaodu(df_data):
     return df_data
 
 
-def process_wind_direction(df_data):
-    cols=['2_风向','5_风向','8_风向','11_风向',
-          '14_风向','17_风向','20_风向','23_风向']
-    df_data['风向_EN']=0
-    df_data['风向_ES']=0
-    df_data['风向_WS']=0
-    df_data['风向_WN']=0
-    for index in range(len(df_data)):
-        for dir in df_data.iloc[index][cols]:
-            if 0<=dir<90:
-                df_data.iloc[index]['风向_EN']+=1
-            elif 90<=dir<180:
-                df_data.iloc[index]['风向_ES']+=1
-            elif 180<=dir<270:
-                df_data.iloc[index]['风向_WS']+=1
-            else:
-                df_data.iloc[index]['风向_WN']+=1
-    return df_data
-
-
-def process_temp(df_data):
-    """
-    处理温度
-    :return:
-    """
-    ## 计算温度日较差模型：日照平均值*温度差平方根
-    df_data['温度_sub'] = np.sqrt(df_data['温度_max'] - df_data['温度_min'])
-    return df_data
-
-
 def create_fea(df_data):
     df_data=to_one_day(df_data)
+
     # 计算统计值
     df_data=cal_base(df_data)
     # 处理辐照度
     df_data=process_fuzhaodu(df_data)
-    # 处理风速
-    # df_data=process_wind_direction(df_data)
-    # 处理温度
-    df_data=process_temp(df_data)
-    # 处理气压
+    ## 日照百分率
+    # fuzhao_cols = [col for col in df_data.columns if '辐照度' in col]
+    # df_data['日照_ration']=((df_data[fuzhao_cols]!= 0.0).astype(int).sum(axis=1)-1)/7
+    ## 计算温度日较差模型：日照平均值*温度差平方根
+    df_data['温度_sub']=np.sqrt(df_data['温度_max']-df_data['温度_min'])
+    ## 增加二阶特征
+    # co = ['风速_mean', '辐照度_mean', '风向_mean', '温度_mean', '湿度_mean', '气压_mean']
+    # df_data = add_poly_features(df_data, co)
+    print(df_data.columns)
     return df_data
 
 
@@ -142,4 +118,4 @@ def load_feature():
     return df_train,df_test,label
 
 
-df_train,df_test,label=load_feature()
+f_train,df_test,label=load_feature()
